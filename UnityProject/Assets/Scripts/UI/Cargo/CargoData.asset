@@ -634,6 +634,12 @@ MonoBehaviour:
       - {fileID: 728401503887791882, guid: 5bcdb263d27704d17bee5ce7e474f028, type: 3}
       - {fileID: 728401503887791882, guid: 549cd6443fca249c3a3399a36f1197f0, type: 3}
       - {fileID: 728401503887791882, guid: 6f38690aacaa94594b183a38b76111d6, type: 3}
+    - OrderName: 'Plasma generator '
+      CreditsCost: 1000
+      Crate: {fileID: 6439324441883113404, guid: 4ff388f72fc794b1fab838a88a5d115e,
+        type: 3}
+      Items:
+      - {fileID: 1853426429102140, guid: 69c27c4a07b053d458c6fec363e66403, type: 3}
   - CategoryName: Service
     Supplies:
     - OrderName: Cleaning supplies Crate
@@ -712,10 +718,12 @@ MonoBehaviour:
       Crate: {fileID: 7179535571258370003, guid: 44071f490693c439896528fb8aca8917,
         type: 3}
       Items:
-      - {fileID: 2654136094092541073, guid: 82cb1c39112974a498a9756981eb07d0, type: 3}
-      - {fileID: 2654136094092541073, guid: 82cb1c39112974a498a9756981eb07d0, type: 3}
-      - {fileID: 2654136094092541073, guid: 5a7fa3c926dc42141889e9b72c5d314d, type: 3}
-      - {fileID: 2654136094092541073, guid: 5a7fa3c926dc42141889e9b72c5d314d, type: 3}
+      - {fileID: 2654578771155045139, guid: 82cb1c39112974a498a9756981eb07d0, type: 3}
+      - {fileID: 2654578771155045139, guid: 82cb1c39112974a498a9756981eb07d0, type: 3}
+      - {fileID: 2654578771155045139, guid: 5a7fa3c926dc42141889e9b72c5d314d, type: 3}
+      - {fileID: 2654578771155045139, guid: 5a7fa3c926dc42141889e9b72c5d314d, type: 3}
+      - {fileID: 6507691273333881185, guid: 1488f67a55cb9b84098e095e65e5a2b3, type: 3}
+      - {fileID: 6507691273333881185, guid: 1488f67a55cb9b84098e095e65e5a2b3, type: 3}
   - CategoryName: Emergency
     Supplies:
     - OrderName: Internals Crate
