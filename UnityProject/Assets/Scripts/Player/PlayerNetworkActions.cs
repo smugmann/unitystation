@@ -236,10 +236,12 @@ public partial class PlayerNetworkActions : NetworkBehaviour
 	}
 
 	[Command]
-	public void CmdRegisterVote(string userId, bool isFor)
+	public void CmdRegisterVote(bool isFor)
 	{
 		if (VotingManager.Instance == null) return;
-		VotingManager.Instance.RegisterVote(userId, isFor);
+		var connectedPlayer = PlayerList.Instance.Get(gameObject);
+		if (connectedPlayer == ConnectedPlayer.Invalid) return;
+		VotingManager.Instance.RegisterVote(connectedPlayer.UserId, isFor);
 	}
 
 	/// <summary>
@@ -413,7 +415,9 @@ public partial class PlayerNetworkActions : NetworkBehaviour
 	[Server]
 	public void ServerSpawnPlayerGhost()
 	{
-		if (GetComponent<LivingHealthBehaviour>().IsDead && !playerScript.IsGhost)
+		//Only force to ghost if the mind belongs in to that body
+		var currentMobID = GetComponent<LivingHealthBehaviour>().mobID;
+		if (GetComponent<LivingHealthBehaviour>().IsDead && !playerScript.IsGhost && playerScript.mind.bodyMobID == currentMobID)
 		{
 			PlayerSpawn.ServerSpawnGhost(playerScript.mind);
 		}
@@ -452,48 +456,6 @@ public partial class PlayerNetworkActions : NetworkBehaviour
 	{
 		//no more input can be sent to the body.
 		GetComponent<MouseInputController>().enabled = false;
-	}
-
-	//FOOD
-	[Command]
-	public void CmdEatFood(GameObject food, NamedSlot fromSlot, bool isDrink)
-	{
-		if (!Validations.CanInteract(playerScript, NetworkSide.Server)) return;
-
-		var slot = itemStorage.GetNamedItemSlot(fromSlot);
-		if (slot.Item == null)
-		{
-			//Already been eaten or the food is no longer in hand
-			return;
-		}
-
-		if (!Cooldowns.TryStartServer(playerScript, CommonCooldowns.Instance.Interaction)) return;
-		Edible baseFood = food.GetComponent<Edible>();
-		if (isDrink)
-		{
-			SoundManager.PlayNetworkedAtPos("Slurp", transform.position);
-		}
-		else
-		{
-			SoundManager.PlayNetworkedAtPos("EatFood", transform.position);
-		}
-
-		PlayerHealth playerHealth = GetComponent<PlayerHealth>();
-
-		//FIXME: remove blood changes after TDM
-		//and use this Cmd for healing hunger and applying
-		//food related attributes instead:
-		playerHealth.bloodSystem.BloodLevel += baseFood.healAmount;
-		playerHealth.bloodSystem.StopBleedingAll();
-
-		Inventory.ServerDespawn(slot);
-
-		GameObject leavings = baseFood.leavings;
-		if (leavings != null)
-		{
-			leavings = Spawn.ServerPrefab(leavings).GameObject;
-			Inventory.ServerAdd(leavings.GetComponent<Pickupable>(), slot);
-		}
 	}
 
 	[Command]
