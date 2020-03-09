@@ -483,7 +483,6 @@ public class MouseInputController : MonoBehaviour
 	/// Fires if shift is pressed on click, initiates examine. Assumes inanimate object, but upgrades to checking health if living, and id if target has 
 	/// storage and an ID card in-slot.
 	/// </summary>
-	/// <returns>false if no shiftclick, true if something was examined (for future chatbox related events, or gui)</returns>
 	private void CheckShiftClick()
 	{
 		// Get clickedObject from mousepos
@@ -491,7 +490,7 @@ public class MouseInputController : MonoBehaviour
 		
 		// TODO Prepare and send requestexaminemessage
 		// todo:  check if netid = 0.
-		RequestExamineMessage.Send(clickedObject.GetComponent<NetworkIdentity>().netId);
+		RequestExamineMessage.Send(clickedObject.GetComponent<NetworkIdentity>().netId, MouseWorldPosition);
 	}
 
 	private bool CheckAltClick()

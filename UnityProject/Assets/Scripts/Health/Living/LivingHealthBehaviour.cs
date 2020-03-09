@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Utility = UnityEngine.Networking.Utility;
 using Mirror;
+using UnityEngine.Profiling;
 
 /// <summary>
 /// The Required component for all living creatures
@@ -406,7 +407,9 @@ public abstract class LivingHealthBehaviour : NetworkBehaviour, IHealth, IFireEx
 
 	public void OnExposed(FireExposure exposure)
 	{
+		Profiler.BeginSample("PlayerExpose");
 		ApplyDamage(null, 1, AttackType.Fire, DamageType.Burn);
+		Profiler.EndSample();
 	}
 
 	/// ---------------------------
@@ -762,7 +765,7 @@ public abstract class LivingHealthBehaviour : NetworkBehaviour, IHealth, IFireEx
 	/// so logic generating examine text can be completely separate from examine 
 	/// request or netmessage processing.
 	/// </summary>
-	public string Examine()
+	public string Examine(Vector3 worldPos)
 	{
 		var healthFraction = OverallHealth/maxHealth;
 		var healthString  = "";

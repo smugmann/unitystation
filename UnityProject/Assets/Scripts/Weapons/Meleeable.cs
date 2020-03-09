@@ -8,9 +8,6 @@ using UnityEngine;
 public class Meleeable : MonoBehaviour, IPredictedCheckedInteractable<PositionalHandApply>
 {
 	[SerializeField]
-	private ItemTrait butcherKnifeTrait;
-
-	[SerializeField]
 	private static readonly StandardProgressActionConfig ProgressConfig
 	= new StandardProgressActionConfig(StandardProgressActionType.Restrain);
 
@@ -96,12 +93,17 @@ public class Meleeable : MonoBehaviour, IPredictedCheckedInteractable<Positional
 
 	public void ServerPerformInteraction(PositionalHandApply interaction)
 	{
+		bool emptyHand = interaction.HandSlot.IsEmpty;
 		var wna = interaction.Performer.GetComponent<WeaponNetworkActions>();
-		if (interactableTiles != null)
+		if (interactableTiles != null && !emptyHand)
 		{
 			//attacking tiles
 			var tileAt = interactableTiles.LayerTileAt(interaction.WorldPositionTarget, true);
 			if (tileAt == null)
+			{
+				return;
+			}
+			if(tileAt.TileType == TileType.Wall)
 			{
 				return;
 			}
@@ -114,7 +116,7 @@ public class Meleeable : MonoBehaviour, IPredictedCheckedInteractable<Positional
 			//butcher check
 			GameObject victim = interaction.TargetObject;
 			var healthComponent = victim.GetComponent<LivingHealthBehaviour>();
-			if (healthComponent && healthComponent.allowKnifeHarvest && healthComponent.IsDead && Validations.HasItemTrait(interaction.HandObject, butcherKnifeTrait) && interaction.Intent == Intent.Harm)
+			if (healthComponent && healthComponent.allowKnifeHarvest && healthComponent.IsDead && Validations.HasItemTrait(interaction.HandObject, CommonTraits.Instance.Knife) && interaction.Intent == Intent.Harm)
 			{
 				GameObject performer = interaction.Performer;
 
@@ -130,6 +132,8 @@ public class Meleeable : MonoBehaviour, IPredictedCheckedInteractable<Positional
 			}
 			else
 			{
+				if (gameObject.GetComponent<Integrity>() && emptyHand) return;
+				
 				wna.ServerPerformMeleeAttack(gameObject, interaction.TargetVector, interaction.TargetBodyPart, LayerType.None);
 			}
 		}

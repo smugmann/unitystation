@@ -54,6 +54,11 @@ internal enum MessageTypes : short
 	AdminBwoinkMessage = 1050,
 	PlayAmbientTrack = 1051,
 	UpdateHungerStateMessage = 1052,
+	SetActionUI = 1053,
+	ShowChatBubble = 1054,
+	VideoPlayerMessage = 1055,
+	ServerTypingMessage = 1056,
+
 
 	//Client messages - 2xxx
 	UpdateHeadsetKeyMessage = 2000,
@@ -90,5 +95,8 @@ internal enum MessageTypes : short
 	RequestRespawn = 2039,
 	RequestAdminBwoink = 2040,
 	AdminReplyMessage = 2041,
-	RequestExamine = 2042
+	RequestGameAction = 2042,
+	RequestGameActionSO = 2043,
+	RequestExamine = 2044,
+	ClientTypingMessage = 2045,
 }
