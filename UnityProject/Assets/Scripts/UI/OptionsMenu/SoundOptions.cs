@@ -8,10 +8,10 @@ namespace Unitystation.Options
     public class SoundOptions : MonoBehaviour
     {
         [SerializeField]
-        private Slider ambientSlider;
+        private Slider ambientSlider = null;
 
         [SerializeField]
-        private Toggle ttsToggle;
+        private Toggle ttsToggle = null;
 
 		[SerializeField]
 		private Slider masterSlider;
@@ -19,14 +19,20 @@ namespace Unitystation.Options
 		void OnEnable()
         {      
             Refresh();
-        }
+			
+		}
 
         public void OnAmbientVolumeChange()
         {
             SoundManager.AmbientVolume(ambientSlider.value);
         }
 
-        public void TTSToggle()
+		public void OnMasterVolumeChange()
+		{
+			SoundManager.MasterVolume(masterSlider.value);
+		}
+
+		public void TTSToggle()
         {
             UIManager.ToggleTTS(ttsToggle.isOn);
         }
@@ -36,7 +42,7 @@ namespace Unitystation.Options
             ambientSlider.value = PlayerPrefs.GetFloat(PlayerPrefKeys.AmbientVolumeKey);
             ttsToggle.isOn = PlayerPrefs.GetInt(PlayerPrefKeys.TTSToggleKey) == 1;
 			masterSlider.value = PlayerPrefs.GetFloat(PlayerPrefKeys.MasterVolumeKey);
-
+			
 		}
 
         public void ResetDefaults()

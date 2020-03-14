@@ -9,9 +9,9 @@ namespace AdminTools
 {
 	public class AdminPrivReply : MonoBehaviour
 	{
-		[SerializeField] private Text adminGhostText;
-		[SerializeField] private Text adminDisplayTest;
-		[SerializeField] private InputField inputField;
+		[SerializeField] private Text adminGhostText = null;
+		[SerializeField] private Text adminDisplayTest = null;
+		[SerializeField] private InputField inputField = null;
 
 		private string adminID;
 
@@ -30,8 +30,8 @@ namespace AdminTools
 		{
 			if (string.IsNullOrWhiteSpace(inputField.text)) return;
 
-			AdminReplyMessage.Send(adminID, $"{PlayerManager.CurrentCharacterSettings.username} replied: " + inputField.text);
-			Chat.AddAdminReplyMsg("PM to-<b>Admins</b>: " + inputField.text);
+			AdminReplyMessage.Send($"{PlayerManager.CurrentCharacterSettings.username} replied: " + inputField.text);
+			Chat.AddAdminPrivMsg("You: " + inputField.text);
 			inputField.text = "";
 
 			StartCoroutine(CloseWindow());
