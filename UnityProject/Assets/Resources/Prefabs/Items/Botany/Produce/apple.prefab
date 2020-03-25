@@ -217,6 +217,12 @@ PrefabInstance:
       propertyPath: plantData.Lifespan
       value: 55
       objectReference: {fileID: 0}
+    - target: {fileID: -9006715302198902684, guid: 2c4e266b6c133da4ba48f9fba33ec92e,
+        type: 3}
+      propertyPath: seedPacket
+      value: 
+      objectReference: {fileID: 11639533463445157, guid: 301047244e720e040b17d641c872719d,
+        type: 3}
     - target: {fileID: 3608205971236566501, guid: 2c4e266b6c133da4ba48f9fba33ec92e,
         type: 3}
       propertyPath: Reagents.Array.size
@@ -303,6 +309,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: f3dcbaf83997cef45957bb1625dc3d36,
         type: 3}
+    - target: {fileID: 4779319350699623693, guid: 2c4e266b6c133da4ba48f9fba33ec92e,
+        type: 3}
+      propertyPath: initialTraits.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 640a4524e899c424bbc28f75f929f4c6,
+        type: 2}
     - target: {fileID: 4948775619215464219, guid: 2c4e266b6c133da4ba48f9fba33ec92e,
         type: 3}
       propertyPath: m_LocalPosition.x

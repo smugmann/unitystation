@@ -33,10 +33,16 @@ public class GUI_Comms : NetTab
 	private NetLabel shuttleCallButtonLabel = null;
 	[SerializeField]
 	private NetSpriteImage statusImage = null;
+	[SerializeField]
+	private NetLabel CurrentAlertLevelLabel = null;
+	[SerializeField]
+	private NetLabel NewAlertLevelLabel = null;
 
 	private CommsConsole console;
 	private EscapeShuttle shuttle;
 	private Coroutine callResultHandle;
+
+	private CentComm.AlertLevel LocalAlertLevel = CentComm.AlertLevel.Green;
 
 	protected override void InitServer()
 	{
@@ -105,7 +111,7 @@ public class GUI_Comms : NetTab
 
 		bool isRecall = shuttle.Status == ShuttleStatus.OnRouteStation;
 
-		var minutes = 2;
+		
 
 		string callResult;
 		bool ok;
@@ -130,6 +136,7 @@ public class GUI_Comms : NetTab
 				ok = shuttle.CallShuttle(out callResult);
 				if ( ok )
 				{
+					var minutes = TimeSpan.FromSeconds(shuttle.InitialTimerSeconds).ToString();
 					CentComm.MakeShuttleCallAnnouncement( minutes, text );
 					RefreshCallButtonText();
 				}
@@ -168,14 +175,29 @@ public class GUI_Comms : NetTab
 	public void MakeAnAnnouncement(string text)
 	{
 		Logger.Log( nameof(MakeAnAnnouncement), Category.NetUI );
-		CentComm.MakeAnnouncement(CentComm.CaptainAnnounceTemplate, text, CentComm.UpdateType.announce);
+		CentComm.MakeAnnouncement(CentComm.CaptainAnnounceTemplate, text, CentComm.UpdateSound.announce);
 		OpenMenu();
+	}
+	
+	public void UpdateAlertLevelLabels()
+	{
+		CurrentAlertLevelLabel.SetValue = GameManager.Instance.CentComm.CurrentAlertLevel.ToString().ToUpper();
+		NewAlertLevelLabel.SetValue = LocalAlertLevel.ToString().ToUpper();
 	}
 	public void ChangeAlertLevel()
 	{
-		//todo
 		Logger.Log( nameof(ChangeAlertLevel), Category.NetUI );
+		GameManager.Instance.CentComm.ChangeAlertLevel(LocalAlertLevel);
+
+		OpenMenu();
 	}
+
+	public void SelectAlertLevel(string levelName)
+	{
+		LocalAlertLevel =
+			(CentComm.AlertLevel)Enum.Parse(typeof(CentComm.AlertLevel), levelName);
+	}
+
 	public void RequestNukeCodes()
 	{
 		//todo

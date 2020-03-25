@@ -10,6 +10,7 @@ namespace AdminTools
 		public AdminPlayerChat adminPlayerChat = null;
 		public AdminToAdminChat adminToAdminChat = null;
 		public PlayerPrayerWindow playerPrayerWindow = null;
+		public List<AdminPlayersScrollView> playerListViews = new List<AdminPlayersScrollView>();
 
 		public AdminChatWindow SelectedWindow { get; private set; }
 		public event Action<AdminChatWindow> WindowChangeEvent;
@@ -54,6 +55,13 @@ namespace AdminTools
 			{
 				WindowChangeEvent.Invoke(SelectedWindow);
 			}
+		}
+
+		public void ResetAll()
+		{
+			adminPlayerChat.ClearLogs();
+			adminToAdminChat.ClearLogs();
+			playerPrayerWindow.ClearLogs();
 		}
 	}
 
