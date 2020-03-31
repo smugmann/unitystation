@@ -499,11 +499,21 @@ public partial class PlayerNetworkActions : NetworkBehaviour
 	/// <summary>
 	/// Asks the server to let the client rejoin into a logged off character.
 	/// </summary>
+	///
 	[Command]
-	public void CmdGhostEnterBody()
+	public void CmdGhostCheck()//specific check for if you want value returned
+	{
+		GhostEnterBody();
+	}
+
+	[Server]
+	public void GhostEnterBody()
 	{
 		PlayerScript body = playerScript.mind.body;
-		if (!playerScript.IsGhost || !body.playerHealth.IsDead)
+
+		if (playerScript.mind.IsSpectator) return;
+
+		if (!playerScript.IsGhost )
 		{
 			Logger.LogWarningFormat("Either player {0} is not dead or not currently a ghost, ignoring EnterBody", Category.Health, body);
 			return;
@@ -517,6 +527,7 @@ public partial class PlayerNetworkActions : NetworkBehaviour
 		}
 		playerScript.mind.StopGhosting();
 		PlayerSpawn.ServerGhostReenterBody(connectionToClient, gameObject, playerScript.mind);
+		return;
 	}
 
 	/// <summary>
@@ -727,7 +738,7 @@ public partial class PlayerNetworkActions : NetworkBehaviour
 	[Server]
 	public void ServerGhostPerformTeleport(Vector3 s3)
 	{
-		if (playerScript.IsGhost)
+		if (playerScript.IsGhost && Math.Abs(s3.x) <= 5000 && Math.Abs(s3.y) <= 5000)
 		{
 			playerScript.PlayerSync.SetPosition(s3); //server forces position on player
 		}
@@ -735,6 +746,52 @@ public partial class PlayerNetworkActions : NetworkBehaviour
 
 	//admin only commands
 	#region Admin
+
+	[Command]
+	public void CmdAGhost(string adminId, string adminToken)
+	{
+		ServerAGhost(adminId, adminToken);
+	}
+
+	[Server]
+	public void ServerAGhost(string adminId, string adminToken)
+	{
+		var admin = PlayerList.Instance.GetAdmin(adminId, adminToken);
+		if (admin == null) return;
+
+		if (!playerScript.IsGhost)//admin turns into ghost
+		{
+			PlayerSpawn.ServerSpawnGhost(playerScript.mind);
+		}
+		else if (playerScript.IsGhost)//back to player
+		{
+			if (playerScript.mind.IsSpectator) return;
+
+			GhostEnterBody();
+		}
+	}
+
+	[Command]
+	public void CmdPlaySound(string index, string adminId, string adminToken)
+	{
+		PlaySound(index, adminId, adminToken);
+	}
+
+	[Server]
+	public void PlaySound(string index, string adminId, string adminToken)
+	{
+		var admin = PlayerList.Instance.GetAdmin(adminId, adminToken);
+		if (admin == null) return;
+
+		var players = FindObjectsOfType(typeof(PlayerScript));
+
+		if (players == null) return;//If list of Players is empty dont run rest of code.
+
+		foreach (PlayerScript player in players)
+		{
+			SoundManager.PlayNetworkedForPlayerAtPos(player.gameObject, player.gameObject.GetComponent<RegisterTile>().WorldPositionClient, index);
+		}
+	}
 
 	[Command]
 	public void CmdAdminMakeHotspot(GameObject onObject, string adminId, string adminToken)

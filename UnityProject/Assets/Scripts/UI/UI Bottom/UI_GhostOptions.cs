@@ -6,8 +6,10 @@ using UnityEngine.UI;
 public class UI_GhostOptions : MonoBehaviour
 {
 	[SerializeField] private Text ghostHearText = null;
+	[SerializeField] private GameObject teleportButtonList = null;
 
 	private bool TeleportScreenOpen = false;
+	private bool PlacesTeleportScreenOpen = false;
 
 	void OnEnable()
 	{
@@ -16,7 +18,23 @@ public class UI_GhostOptions : MonoBehaviour
 
 	public void JumpToMob()
 	{
-		TeleportScreenStatus();
+		if (TeleportScreenOpen == true)// close screen if true
+		{
+			teleportButtonList.SetActive(false);
+			TeleportScreenOpen = false;
+		}
+		else if (TeleportScreenOpen == false & PlacesTeleportScreenOpen == true)//switches to mob screen from places if true
+		{
+			TeleportScreenOpen = true;
+			PlacesTeleportScreenOpen = false;
+			GetComponentInChildren<TeleportButtonControl>().GenButtons();
+		}
+		else//opens screen
+		{
+			teleportButtonList.SetActive(true);
+			TeleportScreenOpen = true;
+			GetComponentInChildren<TeleportButtonControl>().GenButtons();
+		}
 	}
 
 	public void Orbit()
@@ -25,12 +43,28 @@ public class UI_GhostOptions : MonoBehaviour
 
 	public void ReenterCorpse()
 	{
-		PlayerManager.LocalPlayerScript.playerNetworkActions.CmdGhostEnterBody();
+		PlayerManager.LocalPlayerScript.playerNetworkActions.CmdGhostCheck();
 	}
 
 	public void Teleport()
 	{
-		TeleportScreenStatus();
+		if (PlacesTeleportScreenOpen == true)//Close screen if true
+		{
+			teleportButtonList.SetActive(false);
+			PlacesTeleportScreenOpen = false;
+		}
+		else if (PlacesTeleportScreenOpen == false & TeleportScreenOpen == true)// switches to Place Teleport if mob teleport is open
+		{
+			PlacesTeleportScreenOpen = true;
+			TeleportScreenOpen = false;
+			GetComponentInChildren<TeleportButtonControl>().PlacesGenButtons();
+		}
+		else//opens screen
+		{
+			teleportButtonList.SetActive(true);
+			PlacesTeleportScreenOpen = true;
+			GetComponentInChildren<TeleportButtonControl>().PlacesGenButtons();
+		}
 	}
 
 	public void pAIcandidate()
@@ -65,19 +99,11 @@ public class UI_GhostOptions : MonoBehaviour
 		}
 	}
 
-	//Checking to see if window is open and whether to close it.
-	public void TeleportScreenStatus()
+	//closes window.
+	public void TeleportScreenClose()//closes screen by close button
 	{
-		if (!TeleportScreenOpen)
-		{
-			transform.Find("TeleportButtonScrollList").gameObject.SetActive(true);
-			TeleportScreenOpen = true;
-			GetComponentInChildren<TeleportButtonControl>().GenButtons();
-		}
-		else
-		{
-			transform.Find("TeleportButtonScrollList").gameObject.SetActive(false);
-			TeleportScreenOpen = false;
-		}
+		teleportButtonList.SetActive(false);
+		TeleportScreenOpen = false;
+		PlacesTeleportScreenOpen = false;
 	}
 }

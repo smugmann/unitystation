@@ -297,7 +297,7 @@ namespace Lobby
 			}
 			else
 			{
-				networkManager.StartHost();
+				LoadingScreenManager.LoadFromLobby(networkManager.StartHost);
 			}
 
 			// Hide dialogue and show status text
@@ -332,6 +332,11 @@ namespace Lobby
 		// Game handlers
 		public void ConnectToServer()
 		{
+			LoadingScreenManager.LoadFromLobby(DoServerConnect);
+		}
+
+		void DoServerConnect()
+		{
 			// Set network address
 			string serverAddress = serverAddressInput.text;
 			if (string.IsNullOrEmpty(serverAddress))
@@ -350,7 +355,24 @@ namespace Lobby
 			Logger.LogFormat("Client trying to connect to {0}:{1}", Category.Connections, serverAddress, serverPort);
 
 			networkManager.networkAddress = serverAddress;
-			networkManager.GetComponent<TelepathyTransport>().port = serverPort;
+
+			var telepathy = networkManager.GetComponent<TelepathyTransport>();
+			if (telepathy != null)
+			{
+				telepathy.port = serverPort;
+			}
+
+			var ignorance = networkManager.GetComponent<IgnoranceThreaded>();
+			if (ignorance != null)
+			{
+				ignorance.CommunicationPort = serverPort;
+			}
+
+			var booster = networkManager.GetComponent<BoosterTransport>();
+			if (booster != null)
+			{
+				booster.port = serverPort;
+			}
 			networkManager.StartClient();
 		}
 
